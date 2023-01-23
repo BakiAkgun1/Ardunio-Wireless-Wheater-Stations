@@ -1,0 +1,42 @@
+#include <SPI.h>
+#include <nRF24L01.h>
+#include <RF24.h>
+#include <dht.h>
+#include <LowPower.h>
+
+
+#define DHT11_PIN 8
+ // DHT22 data pin
+dht DHT; // Creates a DHT object
+
+RF24 radio(7, 9); // CE, CSN
+const byte address[6] = "00001";
+
+char thChar[32] = "";
+String thString = "";
+
+void setup() {
+  radio.begin();
+  Serial.begin(9600);
+  radio.openWritingPipe(address);
+  radio.setPALevel(RF24_PA_MIN);
+  radio.stopListening();
+
+}
+
+void loop() {
+  int readData = DHT.read11(DHT11_PIN); // Reads the data from the sensor
+  int t = DHT.temperature; // Gets the values of the temperature
+  int h = DHT.humidity; // Gets the values of the humidity
+  thString = String(t) + String(h);
+  thString.toCharArray(thChar, 12);
+  // Sent the data wirelessly to the indoor unit
+  for (int i = 0; i < 1; i++) {           // Send the data 3 times
+    radio.write(&thChar, sizeof(thChar));
+    Serial.println("Temp:" + String(t));
+    Serial.println("Hum:" + String(h));
+    delay(2000);
+  }
+  // Sleep for 2 minutes, 15*8 = 120s
+ 
+}
