@@ -1,0 +1,1 @@
+We made this project with a team. Purpose of this project is measure the humidity and heat from 2 different environments. Then received data send indoor screen with wireless piece. Finally small screen shows two heat and two humidity values.
